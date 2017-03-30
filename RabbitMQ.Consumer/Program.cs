@@ -1,4 +1,5 @@
 ﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 
@@ -17,20 +18,21 @@ namespace RabbitMQ.Consumer
                 using(var channel = connection.CreateModel())
                 {
                     channel.QueueDeclare("hello", false, false, false, null);
-                    var consumer = new QueueingBasicConsumer(channel);
-                    channel.BasicConsume("hello", true, consumer);
-                    Console.WriteLine("waiting for message.");
-                    while (true)
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
                     {
-                        var ea = consumer.Queue.Dequeue();
                         var body = ea.Body;
                         var message = Encoding.UTF8.GetString(body);
                         Console.WriteLine("Received {0}", message);
-                    }
+                    };
+                    channel.BasicConsume(queue: "hello",
+                                         noAck: true,
+                                         consumer: consumer);
 
+                    Console.WriteLine(" Press [enter] to exit.");
+                    Console.ReadLine();
                 }
             }
-            Console.WriteLine("Hello World!");
             Console.ReadKey();
         }
     }
