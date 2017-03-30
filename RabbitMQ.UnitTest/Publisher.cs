@@ -1,5 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RabbitMQ.Core;
 
 namespace RabbitMQ.UnitTest
 {
@@ -9,7 +10,8 @@ namespace RabbitMQ.UnitTest
         [TestMethod]
         public void CommonQueue()
         {
-
+            QueueFactory qF = new QueueFactory();
+            qF.CreateCommonPublisher();
         }
     }
 }
