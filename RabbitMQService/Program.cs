@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Core;
+﻿using RabbitMQ.Common;
+using RabbitMQ.Core;
 using System;
 using System.Text;
 
@@ -9,7 +10,10 @@ namespace RabbitMQService
         static void Main(string[] args)
         {
             //RabbitMQ.Client.
-            QueueFactory qF = new QueueFactory();
+            QueueFactory qF = new QueueFactory(new MQModel() {
+                QueueName="workerQ",
+                Message = ((args.Length > 0) ? string.Join(" ", args) : "Hello World!")
+            });
             //qF.CreateCommonPublisher();
             qF.QueueMessage = "hello world...";
             qF.CreateWorkerPublisher();
