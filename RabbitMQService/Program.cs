@@ -10,7 +10,9 @@ namespace RabbitMQService
         {
             //RabbitMQ.Client.
             QueueFactory qF = new QueueFactory();
-            qF.CreateCommonPublisher();
+            //qF.CreateCommonPublisher();
+            qF.QueueMessage = "hello world...";
+            qF.CreateWorkerPublisher();
             Console.WriteLine("Hello World!");
             Console.ReadLine();
         }

@@ -9,7 +9,13 @@ namespace RabbitMQ.UnitTest
     public class Consumers
     {
         [TestMethod]
-        public void Consume()
+        public void CommonConsume()
+        {
+
+        }
+
+        [TestMethod]
+        public void WorkerQueueConsumer()
         {
 
         }

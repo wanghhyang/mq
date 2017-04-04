@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RabbitMQ.Common;
+using System;
 using System.Text;
 
 namespace RabbitMQ.Core
@@ -10,7 +11,8 @@ namespace RabbitMQ.Core
         private string queueName = string.Empty; 
         public string QueueMessage
         {
-            get;set;
+            get;
+            set;
         }
           
         public QueueFactory()
@@ -20,9 +22,13 @@ namespace RabbitMQ.Core
             factory.Password = "123123";
             this.queueName = shareQueueName;
         }
-        public QueueFactory(string queueName):this()
+        public QueueFactory(MQModel queue):this()
         {
-            this.queueName = queueName;
+            this.queueName = queue.QueueName;
+            if (!string.IsNullOrEmpty(queue.Message)&& string.IsNullOrEmpty(QueueMessage))
+            {
+                QueueMessage = queue.Message;
+            }
         }
         /// <summary>
         /// 创建一个普通的队列发布者
@@ -44,6 +50,9 @@ namespace RabbitMQ.Core
                 }
             }
         }
+        /// <summary>
+        /// 创建一个工作队列
+        /// </summary>
         public void CreateWorkerPublisher()
         {
             using (var connection =factory.CreateConnection())
@@ -56,7 +65,7 @@ namespace RabbitMQ.Core
                     properties.DeliveryMode = 2;
 
                     var body = Encoding.UTF8.GetBytes(message);
-                    channel.BasicPublish("", "hello",false, properties, body);
+                    channel.BasicPublish("", queueName, false, properties, body);
                     Console.WriteLine(" set {0}", message);
                 }
             }
